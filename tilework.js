@@ -1,4 +1,4 @@
-// Tilework (github.com/kaorii-ako/agent-canvas) runs Claude Code in canvas tiles. Its tile ids match this.
+// Tilework (github.com/kaorii-ako/tilework) runs Claude Code in canvas tiles. Its tile ids match this.
 export const TILE_ID = /^[A-Za-z0-9._-]{1,128}$/;
 
 /** The tile's name from Tilework's workspace.json text, or '' if it isn't there. */
