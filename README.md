@@ -128,7 +128,7 @@ When Claude needs permission, the pill shows the project and tool with a shield.
 
 No answer within two minutes and the question goes back to your terminal as usual, with an amber dot left on the pill. When Nublet isn't running, Claude Code behaves exactly as without it.
 
-Clicking a session's name raises its terminal window, and its tmux pane if it runs in tmux. Sessions running in a [Tilework](https://github.com/kaorii-ako/agent-canvas) tile show the tile's name, and clicking one zooms Tilework to that tile.
+Clicking a session's name raises its terminal window, and its tmux pane if it runs in tmux. Sessions running in a [Tilework](https://github.com/kaorii-ako/tilework) tile show the tile's name, and clicking one zooms Tilework to that tile.
 
 ## Privacy
 
