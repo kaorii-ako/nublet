@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nublet: a live top bar for GNOME</title>
+  <meta name="description" content="Nublet turns the GNOME clock into a black pill that shows what is happening: Claude Code approvals, music, volume, timers and more.">
+  <meta property="og:title" content="Nublet: a live top bar for GNOME">
+  <meta property="og:description" content="Approve Claude Code, control music and see your system at a glance, right from the GNOME top bar.">
+  <meta property="og:image" content="https://kaorii-ako.github.io/nublet/assets/open_claude.webp">
+  <meta name="theme-color" content="#0b0b0d">
+  <link rel="preload" href="fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="nav">
+    <a class="wordmark" href="#top" aria-label="Nublet home"><span class="mark" aria-hidden="true"></span>Nublet</a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="#claude">Claude Code</a>
+      <a href="#features">Features</a>
+      <a href="#install">Install</a>
+      <a href="https://github.com/kaorii-ako/nublet">GitHub</a>
+    </nav>
+    <a class="button button-primary button-small" href="https://github.com/kaorii-ako/nublet/releases/latest/download/nublet@kaorii-ako.shell-extension.zip">Download</a>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <h1>Your top bar, awake.</h1>
+        <p class="lede">Nublet turns the GNOME clock into a black pill that shows what is happening and lets you act on it.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="https://github.com/kaorii-ako/nublet/releases/latest/download/nublet@kaorii-ako.shell-extension.zip"><i class="ph ph-download-simple" aria-hidden="true"></i>Download</a>
+          <a class="button button-ghost" href="https://github.com/kaorii-ako/nublet"><i class="ph ph-github-logo" aria-hidden="true"></i>View on GitHub</a>
+        </div>
+        <p class="fineprint">Free and open source. GNOME Shell 50 on Wayland.</p>
+      </div>
+
+      <div class="hero-demo">
+        <div class="screen" role="img" aria-label="A preview of the Nublet pill in the GNOME top bar, switching between live activities">
+          <div class="topbar">
+            <span class="workspaces" aria-hidden="true"><span></span><span></span></span>
+            <button class="pill" type="button" aria-label="Show the next activity" data-pill>
+              <span class="pill-ear pill-ear-left" aria-hidden="true"></span>
+              <span class="pill-ear pill-ear-right" aria-hidden="true"></span>
+              <span class="pill-content" data-pill-content></span>
+            </button>
+            <span class="status" aria-hidden="true">
+              <i class="ph ph-wifi-high"></i><i class="ph ph-bluetooth"></i><i class="ph ph-speaker-high"></i><i class="ph ph-power"></i>
+            </span>
+          </div>
+          <div class="desktop" aria-hidden="true"></div>
+        </div>
+        <div class="chips" role="group" aria-label="Choose an activity to preview" data-chips>
+          <button type="button" data-state="clock">Clock</button>
+          <button type="button" data-state="music">Music</button>
+          <button type="button" data-state="claude">Claude</button>
+          <button type="button" data-state="volume">Volume</button>
+          <button type="button" data-state="timer">Timer</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="feature reveal" id="claude">
+      <div class="feature-copy">
+        <h2>Approve Claude Code without leaving what you are doing.</h2>
+        <p>When a session needs permission, the pill shows the project and the command. Click it, read the exact command, and answer.</p>
+        <ul class="answers">
+          <li><span class="key key-light">Allow once</span>Run this one command</li>
+          <li><span class="key">Always allow</span>Save the rule Claude suggests</li>
+          <li><span class="key key-danger">Deny</span>Claude is told and carries on</li>
+          <li><span class="key">Open terminal</span>Jump to the session instead</li>
+        </ul>
+        <p class="note">No answer within two minutes and the question goes back to your terminal as usual.</p>
+      </div>
+      <figure class="shot shot-tilt">
+        <img src="assets/open_claude.webp" width="1360" height="556" alt="Nublet open over the top bar, showing a Claude Code permission request for npm run build with Allow once, Always allow, Deny and Open terminal buttons, and a second session that is working" loading="lazy">
+      </figure>
+    </section>
+
+    <section class="bento reveal" id="features">
+      <h2 class="section-title">Everything else is one click away.</h2>
+      <div class="bento-grid">
+        <figure class="tile tile-media">
+          <img src="assets/open_media.webp" width="1360" height="490" alt="The Media tab with album art, title, artist, a seek bar and playback controls" loading="lazy">
+          <figcaption><strong>Media</strong> Art, controls and seeking for any player, plus synced lyrics.</figcaption>
+        </figure>
+        <figure class="tile tile-pills">
+          <div class="pill-stack">
+            <img src="assets/pill_music.webp" width="900" height="100" alt="Pill showing now playing with tiny album art and moving bars" loading="lazy">
+            <img src="assets/pill_volume.webp" width="900" height="100" alt="Pill showing volume at 64 percent" loading="lazy">
+            <img src="assets/pill_timer.webp" width="900" height="100" alt="Pill showing a running timer" loading="lazy">
+            <img src="assets/pill_permission.webp" width="900" height="100" alt="Pill showing a Claude Code permission request" loading="lazy">
+          </div>
+          <figcaption><strong>Live activities</strong> The most important thing wins the pill, then it goes quiet again.</figcaption>
+        </figure>
+        <figure class="tile tile-stats">
+          <img src="assets/open_stats.webp" width="1360" height="556" alt="The Stats tab with CPU, GPU, memory, NVMe temperature, download and upload" loading="lazy">
+          <figcaption><strong>Stats</strong> CPU, GPU, memory, disk and network, read only while you look.</figcaption>
+        </figure>
+        <figure class="tile tile-timer">
+          <img src="assets/open_timer.webp" width="1360" height="522" alt="The Timer tab showing 25:00 with preset buttons" loading="lazy">
+          <figcaption><strong>Timer</strong> Counts down in the pill and chimes when it is done.</figcaption>
+        </figure>
+      </div>
+      <p class="more">Also inside: clipboard history, weather, calendar, Gmail and GitHub notifications, grouped into Dev and Life presets.</p>
+    </section>
+
+    <section class="install reveal" id="install">
+      <h2 class="section-title">Install in a minute.</h2>
+      <ol class="steps">
+        <li>
+          <h3>Download and install</h3>
+          <p>Grab the zip, then install it from a terminal.</p>
+          <div class="code" data-code>
+            <code>gnome-extensions install --force nublet@kaorii-ako.shell-extension.zip</code>
+            <button type="button" class="copy" aria-label="Copy install command" data-copy><i class="ph ph-copy" aria-hidden="true"></i><span>Copy</span></button>
+          </div>
+        </li>
+        <li>
+          <h3>Log out and back in</h3>
+          <p>GNOME picks up new extensions when you log in.</p>
+        </li>
+        <li>
+          <h3>Turn it on</h3>
+          <div class="code" data-code>
+            <code>gnome-extensions enable nublet@kaorii-ako</code>
+            <button type="button" class="copy" aria-label="Copy enable command" data-copy><i class="ph ph-copy" aria-hidden="true"></i><span>Copy</span></button>
+          </div>
+          <p>For Claude Code, open Nublet's settings and press Install under Claude Code. Your other hooks stay untouched.</p>
+        </li>
+      </ol>
+    </section>
+
+    <section class="closing reveal">
+      <div class="closing-card">
+        <i class="ph ph-lock-simple" aria-hidden="true"></i>
+        <div>
+          <h2>Runs only on your computer.</h2>
+          <p>No account, no server, no analytics. Read exactly what it touches in the <a href="https://github.com/kaorii-ako/nublet/blob/main/PRIVACY.md">privacy notes</a>.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>Nublet is free software under GPL-2.0-or-later.</span>
+    <span><a href="https://github.com/kaorii-ako/nublet">Source</a><a href="https://github.com/kaorii-ako/nublet/issues">Report a bug</a></span>
+  </footer>
+</body>
+</html>

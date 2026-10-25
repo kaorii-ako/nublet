@@ -1,0 +1,463 @@
+.nublet {
+  font-feature-settings: "tnum";
+}
+
+.nublet-body {
+  background-color: #000;
+}
+
+.nublet-clock {
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+}
+
+#panel.nublet-panel {
+  font-weight: 600;
+  font-feature-settings: "tnum";
+}
+
+#panel.nublet-panel .panel-button {
+  font-weight: 600;
+  border-radius: 99px;
+  transition-duration: 160ms;
+}
+
+#panel.nublet-panel .panel-button:hover {
+  background-color: rgba(255, 255, 255, 0.10);
+}
+
+#panel.nublet-panel .panel-button:active,
+#panel.nublet-panel .panel-button:checked {
+  background-color: rgba(255, 255, 255, 0.18);
+}
+
+#panel.nublet-panel .panel-button.nublet-spacer,
+#panel.nublet-panel .panel-button.nublet-spacer:hover,
+#panel.nublet-panel .panel-button.nublet-spacer:active,
+#panel.nublet-panel .panel-button.nublet-spacer:checked {
+  background-color: transparent;
+}
+
+.nublet-compact {
+  spacing: 6px;
+}
+
+.nublet-compact-art {
+  icon-size: 18px;
+}
+
+.nublet-compact-icon {
+  icon-size: 14px;
+  color: #fff;
+}
+
+.nublet-compact-icon.nublet-state-idle,
+.nublet-compact-icon.nublet-state-working,
+.nublet-compact-icon.nublet-state-terminal {
+  icon-size: 8px;
+}
+
+.nublet-badge {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85em;
+  font-weight: 600;
+  letter-spacing: 0.1px;
+}
+
+.nublet-level {
+  height: 4px;
+  border-radius: 2px;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.nublet-level-fill {
+  height: 4px;
+  border-radius: 2px;
+  background-color: #fff;
+}
+
+.nublet-bars {
+  spacing: 2px;
+  height: 12px;
+}
+
+.nublet-bar {
+  width: 3px;
+  height: 12px;
+  border-radius: 1.5px;
+  background-color: #fff;
+}
+
+.nublet-privacy {
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+}
+
+.nublet-privacy-mic {
+  background-color: #ff9f0a;
+}
+
+.nublet-privacy-camera {
+  background-color: #30d158;
+}
+
+.nublet-state-idle,
+.nublet-state-working {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.nublet-state-permission,
+.nublet-state-terminal {
+  color: #ffb340;
+}
+
+.nublet-state-done {
+  color: #4cd964;
+}
+
+.nublet-state-error {
+  color: #ff5f57;
+}
+
+.nublet-state-feed {
+  color: #64a8ff;
+}
+
+.nublet-content {
+  spacing: 10px;
+}
+
+.nublet-header {
+  spacing: 8px;
+}
+
+.nublet-segmented {
+  padding: 2px;
+  border-radius: 99px;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.nublet-segment {
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+  font-size: 0.9em;
+  padding: 3px 10px;
+  border-radius: 99px;
+  transition-duration: 120ms;
+}
+
+.nublet-segment:hover {
+  color: #fff;
+}
+
+.nublet-segment:checked {
+  color: #000;
+  background-color: #fff;
+}
+
+.nublet-tabs {
+  spacing: 2px;
+}
+
+.nublet-tab,
+.nublet-icon-button {
+  color: rgba(255, 255, 255, 0.6);
+  padding: 6px;
+  border-radius: 99px;
+  transition-duration: 120ms;
+}
+
+.nublet-tab StIcon,
+.nublet-icon-button StIcon {
+  icon-size: 16px;
+}
+
+.nublet-tab:hover,
+.nublet-icon-button:hover {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nublet-tab:active,
+.nublet-icon-button:active {
+  background-color: rgba(255, 255, 255, 0.18);
+}
+
+.nublet-tab:checked {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.16);
+}
+
+.nublet-card {
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.nublet-dim {
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+  letter-spacing: 0.1px;
+}
+
+.nublet-small {
+  font-size: 0.85em;
+}
+
+.nublet-empty {
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 500;
+  padding: 12px;
+}
+
+.nublet-section-title {
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+  font-size: 0.85em;
+  padding: 4px 4px 0;
+}
+
+.nublet-section-head {
+  spacing: 8px;
+  padding: 0 4px;
+}
+
+.nublet-session-list {
+  spacing: 6px;
+}
+
+.nublet-session {
+  spacing: 8px;
+}
+
+.nublet-session-head {
+  spacing: 8px;
+}
+
+.nublet-session-name {
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: -0.1px;
+  padding: 2px 6px;
+  border-radius: 8px;
+  transition-duration: 120ms;
+}
+
+.nublet-session-name:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+.nublet-request-block {
+  spacing: 8px;
+}
+
+.nublet-request {
+  color: rgba(255, 255, 255, 0.88);
+  font-family: monospace;
+  font-size: 0.9em;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background-color: rgba(0, 0, 0, 0.35);
+}
+
+.nublet-actions {
+  spacing: 6px;
+}
+
+.nublet-action {
+  color: #fff;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 99px;
+  background-color: rgba(255, 255, 255, 0.12);
+  transition-duration: 120ms;
+}
+
+.nublet-action:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.nublet-action:active {
+  background-color: rgba(255, 255, 255, 0.28);
+}
+
+.nublet-action.nublet-allow {
+  color: #000;
+  background-color: #fff;
+}
+
+.nublet-action.nublet-allow:hover {
+  background-color: rgba(255, 255, 255, 0.86);
+}
+
+.nublet-action.nublet-allow:active {
+  background-color: rgba(255, 255, 255, 0.72);
+}
+
+.nublet-action.nublet-deny {
+  color: #ff6b63;
+}
+
+.nublet-media {
+  spacing: 14px;
+}
+
+.nublet-media-art {
+  icon-size: 96px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.nublet-media-info {
+  spacing: 4px;
+}
+
+.nublet-media-title {
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.1em;
+  letter-spacing: -0.2px;
+}
+
+.nublet-media-lyric {
+  color: #fff;
+  font-weight: 500;
+}
+
+.nublet-progress {
+  height: 4px;
+  margin-top: 6px;
+  border-radius: 2px;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.nublet-progress-fill {
+  height: 4px;
+  border-radius: 2px;
+  background-color: #fff;
+}
+
+.nublet-media-controls {
+  spacing: 12px;
+}
+
+.nublet-media-controls .nublet-icon-button {
+  color: #fff;
+}
+
+.nublet-media-controls StIcon {
+  icon-size: 20px;
+}
+
+.nublet-media-play {
+  padding: 8px;
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+.nublet-grid {
+  spacing: 6px;
+}
+
+.nublet-grid-row {
+  spacing: 6px;
+}
+
+.nublet-tile {
+  spacing: 2px;
+}
+
+.nublet-tile-value {
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.35em;
+  letter-spacing: -0.3px;
+}
+
+.nublet-timer {
+  spacing: 10px;
+  padding: 14px 12px;
+}
+
+.nublet-timer-display {
+  color: #fff;
+  font-weight: 700;
+  font-size: 2.6em;
+  letter-spacing: -1px;
+}
+
+.nublet-clip {
+  padding: 8px 12px;
+  transition-duration: 120ms;
+}
+
+.nublet-clip:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nublet-clip-text {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.nublet-event {
+  spacing: 12px;
+}
+
+.nublet-event-time {
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+  min-width: 56px;
+}
+
+.nublet-event-summary {
+  color: #fff;
+  font-weight: 500;
+}
+
+.nublet-weather {
+  spacing: 12px;
+}
+
+.nublet-weather-now {
+  spacing: 14px;
+}
+
+.nublet-weather-icon {
+  icon-size: 44px;
+  color: #fff;
+}
+
+.nublet-weather-temp {
+  color: #fff;
+  font-weight: 700;
+  font-size: 2em;
+  letter-spacing: -0.8px;
+}
+
+.nublet-weather-hours {
+  spacing: 6px;
+}
+
+.nublet-weather-hour {
+  spacing: 4px;
+  padding: 6px 0;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.nublet-feed-item {
+  padding: 8px 12px;
+  transition-duration: 120ms;
+}
+
+.nublet-feed-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nublet-feed-title {
+  color: #fff;
+  font-weight: 600;
+}
