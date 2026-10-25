@@ -4,11 +4,19 @@ import GLib from 'gi://GLib';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as Signals from 'resource:///org/gnome/shell/misc/signals.js';
 
+import {TILE_ID, focusLine, tileTitle} from './tilework.js';
+
 Gio._promisify(Gio.File.prototype, 'make_directory_async');
 Gio._promisify(Gio.File.prototype, 'enumerate_children_async');
 Gio._promisify(Gio.FileEnumerator.prototype, 'next_files_async');
 Gio._promisify(Gio.File.prototype, 'load_contents_async');
 Gio._promisify(Gio.File.prototype, 'replace_contents_async');
+Gio._promisify(Gio.File.prototype, 'append_to_async');
+Gio._promisify(Gio.OutputStream.prototype, 'write_bytes_async');
+Gio._promisify(Gio.OutputStream.prototype, 'close_async');
+
+const TILEWORK_WORKSPACE = GLib.build_filenamev([GLib.get_user_config_dir(), 'agent-canvas', 'workspace.json']);
+const TILEWORK_STATUS = GLib.build_filenamev([GLib.get_user_runtime_dir(), 'agent-canvas-status.jsonl']);
 
 const STATES = new Set(['idle', 'working', 'permission', 'terminal', 'done', 'error']);
 const ANSWERS = new Set(['allow', 'always', 'deny', 'terminal']);
@@ -33,6 +41,8 @@ function parseSession(bytes) {
         updated: Number(s.updated) || 0,
         request: REQUEST_ID.test(s.request) ? s.request : null,
         canAlways: s.can_always === true,
+        tile: TILE_ID.test(s.tile) ? s.tile : null,
+        tileTitle: '',
         pids: Array.isArray(s.pids) ? s.pids.filter(Number.isInteger) : [],
         tmux: typeof s.tmux?.socket === 'string' && s.tmux.socket.startsWith('/') && TMUX_PANE.test(s.tmux.pane)
             ? {socket: s.tmux.socket, pane: s.tmux.pane}
@@ -103,6 +113,8 @@ export class ClaudeSessions extends Signals.EventEmitter {
             const session = parseSession(bytes);
             if (!session)
                 return;
+            if (session.tile)
+                session.tileTitle = await this._tileTitle(session.tile);
             this.sessions.set(session.id, session);
             this.emit('changed');
         } catch (e) {
@@ -110,6 +122,15 @@ export class ClaudeSessions extends Signals.EventEmitter {
                 e.matches?.(Gio.IOErrorEnum, Gio.IOErrorEnum.NOT_FOUND) || e instanceof SyntaxError)
                 return;
             logError(e, 'Nublet: reading Claude session');
+        }
+    }
+
+    async _tileTitle(tileId) {
+        try {
+            const [bytes] = await Gio.File.new_for_path(TILEWORK_WORKSPACE).load_contents_async(this._cancellable);
+            return tileTitle(new TextDecoder().decode(bytes), tileId);
+        } catch {
+            return '';
         }
     }
 
@@ -141,6 +162,16 @@ export class ClaudeSessions extends Signals.EventEmitter {
         const match = windows.findLast(w => w.get_title()?.includes(session.project)) ?? windows.at(-1);
         if (match)
             Main.activateWindow(match);
+
+        // Tilework zooms to the tile when its status file gets a Focus line. Only append to a file Tilework made.
+        if (session.tile && GLib.file_test(TILEWORK_STATUS, GLib.FileTest.EXISTS)) {
+            Gio.File.new_for_path(TILEWORK_STATUS).append_to_async(Gio.FileCreateFlags.NONE, GLib.PRIORITY_DEFAULT, null)
+                .then(async stream => {
+                    await stream.write_bytes_async(new GLib.Bytes(new TextEncoder().encode(focusLine(session.tile))), GLib.PRIORITY_DEFAULT, null);
+                    await stream.close_async(GLib.PRIORITY_DEFAULT, null);
+                })
+                .catch(e => logError(e, 'Nublet: focusing Tilework tile'));
+        }
 
         if (session.tmux) {
             const {socket, pane} = session.tmux;

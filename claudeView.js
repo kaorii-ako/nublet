@@ -94,7 +94,7 @@ export class ClaudeView {
                 priority: PRIORITY[top.state],
                 icon: ICONS[top.state],
                 iconClass: `nublet-state-${top.state}`,
-                text: what ? `${top.project} · ${what}` : undefined,
+                text: what ? `${top.tileTitle || top.project} · ${what}` : undefined,
                 key: `${top.id}:${top.state}:${top.request ?? ''}`,
                 badge: active.length > 1 ? `+${active.length - 1}` : null,
                 bump: top.state === 'permission',
@@ -203,8 +203,9 @@ export class ClaudeView {
                 row.icon.ease({scale_x: 1, scale_y: 1, duration: 320, mode: Clutter.AnimationMode.EASE_OUT_BACK});
             }
         }
-        row.name.label = s.project;
-        row.name.accessible_name = `Open terminal for ${s.project}`;
+        const name = s.tileTitle ? `${s.tileTitle} · ${s.project}` : s.project;
+        row.name.label = name;
+        row.name.accessible_name = `Open terminal for ${name}`;
         row.status.text = statusText(s);
 
         const requestId = s.state === 'permission' ? s.request : null;

@@ -9,9 +9,11 @@ import time
 HOOK = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'nublet-claude-hook.js')
 
 
-def run(runtime, event, payload, wait='120'):
+def run(runtime, event, payload, wait='120', extra_env=None):
     env = {**os.environ, 'XDG_RUNTIME_DIR': runtime, 'NUBLET_HOOK_WAIT': wait}
     env.pop('TMUX', None)
+    env.pop('AGENT_CANVAS_TILE_ID', None)
+    env.update(extra_env or {})
     result = subprocess.run(['gjs', '-m', HOOK, event], input=json.dumps(payload),
                             capture_output=True, text=True, env=env, timeout=30)
     assert result.returncode == 0, result.stderr
@@ -68,6 +70,10 @@ def main():
     assert run(runtime, 'SessionStart', base) == ''
     assert state(runtime, sid)['state'] == 'idle'
     assert state(runtime, sid)['project'] == 'nublet'
+    assert 'tile' not in state(runtime, sid)
+
+    run(runtime, 'SessionStart', base, extra_env={'AGENT_CANVAS_TILE_ID': 'tile-7'})
+    assert state(runtime, sid)['tile'] == 'tile-7', 'remembers the Tilework tile'
 
     out, took = timed(lambda: run(runtime, 'PermissionRequest', request))
     assert out == '' and took < 3, 'without Nublet running the hook must not hold the terminal prompt'
