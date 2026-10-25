@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Claude sessions running in a Tilework tile show the tile's name, and clicking one zooms Tilework to that tile.
+
 ## 1.0 — 2026-10-25
 
 First release.

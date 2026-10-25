@@ -185,6 +185,9 @@ function main(event) {
     });
     if (data.session_title)
         state.title = data.session_title;
+    const tile = GLib.getenv('AGENT_CANVAS_TILE_ID');
+    if (tile && /^[A-Za-z0-9._-]{1,128}$/.test(tile))
+        state.tile = tile;
 
     if (event === 'SessionStart') {
         Object.assign(state, {state: 'idle', detail: ''});

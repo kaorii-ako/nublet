@@ -2,6 +2,7 @@ import {nextExpiry, pickActivity} from './activities.js';
 import {lineIndexAt, parseLrc} from './lyrics.js';
 import {hasNubletHooks, withNubletHooks, withoutNubletHooks} from './hookInstall.js';
 import {htmlUrl} from './links.js';
+import {TILE_ID, focusLine, tileTitle} from './tilework.js';
 import {cpuPercent, formatRate, parseCpu, parseMem, parseNet} from './statsParse.js';
 
 function assert(ok, message) {
@@ -80,3 +81,10 @@ assert(hasNubletHooks(legacy), 'recognises hooks from the old Isle name');
 assert(withNubletHooks(legacy, '/ext/nublet-claude-hook.js').hooks.Stop.length === 1, 'upgrading from Isle replaces the old hook');
 
 print('parsers: all checks passed');
+
+const workspace = JSON.stringify({version: 1, tiles: [{id: 'tile-1', title: 'Builder'}, {id: 'tile-2'}]});
+assert(tileTitle(workspace, 'tile-1') === 'Builder', 'tile title from workspace.json');
+assert(tileTitle(workspace, 'tile-2') === '' && tileTitle(workspace, 'nope') === '', 'untitled or missing tile');
+assert(tileTitle('{not json', 'tile-1') === '' && tileTitle('null', 'tile-1') === '', 'bad workspace.json');
+assert(focusLine('tile-1') === '{"tile":"tile-1","event":"Focus"}\n', 'focus line for Tilework');
+assert(TILE_ID.test('tile-1') && !TILE_ID.test('a"b') && !TILE_ID.test(''), 'tile id check');
