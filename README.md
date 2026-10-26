@@ -7,7 +7,7 @@
 <p align="center">
 <a href="https://github.com/kaorii-ako/nublet/releases/latest"><img src="https://img.shields.io/github/v/release/kaorii-ako/nublet?style=flat-square" alt="release"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-GPL--2.0--or--later-blue?style=flat-square" alt="license"></a>
-<a href="https://kaorii-ako.github.io/nublet/"><img src="https://img.shields.io/badge/GNOME%20Shell-50-4A86CF?style=flat-square&logo=gnome&logoColor=white" alt="GNOME Shell 50"></a>
+<a href="https://kaorii-ako.github.io/nublet/"><img src="https://img.shields.io/badge/GNOME%20Shell-46--50-4A86CF?style=flat-square&logo=gnome&logoColor=white" alt="GNOME Shell 46 to 50"></a>
 <a href="https://kaorii-ako.github.io/nublet/"><img src="https://img.shields.io/badge/site-kaorii--ako.github.io%2Fnublet-181717?style=flat-square" alt="site"></a>
 </p>
 
@@ -33,7 +33,7 @@
 
 Nublet turns the clock in your GNOME top bar into a black pill that comes alive when something happens. It shows what your Claude Code sessions are doing and lets you approve them, what is playing, your volume, a running timer, your headphones' battery, and whether your mic or camera is in use. Click it for tabs with system stats, media controls, weather, your calendar, clipboard history, Gmail and GitHub.
 
-Built for GNOME Shell 50 on Wayland. Inspired by Atoll for macOS, written from scratch.
+Built for GNOME Shell 46 to 50 on Wayland. Inspired by Atoll for macOS, written from scratch.
 
 ## Why
 
@@ -145,8 +145,11 @@ GNOME disables extensions after a crash. Re-enable them in Extensions, and pleas
 **Does it work with blur-my-shell?**
 Yes, with panel blur on or off.
 
-**Does it support GNOME 49 or older?**
-No. It targets Shell 50 only.
+**Which distros does it run on?**
+Any distro whose desktop is GNOME Shell 46 to 50. That includes Zorin OS 18, Ubuntu 24.04 and newer, Fedora 40 and newer, Bazzite and Bluefin GNOME images, Debian 13, Arch and openSUSE Tumbleweed. Check yours with `gnome-shell --version`. KDE, Cinnamon, Xfce and COSMIC desktops can't load GNOME extensions, which includes the default Bazzite (KDE), Linux Mint and Pop!_OS 24.04.
+
+**Does it support GNOME 45 or older?**
+No.
 
 ## Develop
 
@@ -207,7 +210,7 @@ python3 -I dev/test_hook.py
 | `media.js`, `lyrics.js` | MPRIS player and synced lyrics |
 | `stats.js`, `statsParse.js` | the Stats tab |
 | `timer.js`, `clipboard.js`, `agenda.js`, `weather.js` | the other tabs |
-| `feed.js`, `gmail.js`, `github.js`, `links.js` | Gmail and GitHub |
+| `feed.js`, `gmail.js`, `imapParse.js`, `github.js`, `links.js` | Gmail and GitHub |
 | `prefs.js`, `schemas/` | settings |
 | `dev/` | nested shell, packer, hook test |
 | `docs/` | the website |

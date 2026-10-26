@@ -15,7 +15,7 @@ export class WeatherView {
         this.icon = WeatherView.icon;
         this._host = host;
         this._client = Main.panel.statusArea.dateMenu?._weatherItem?._weatherClient ?? null;
-        this.actor = new St.BoxLayout({style_class: 'nublet-card nublet-weather', orientation: Clutter.Orientation.VERTICAL, x_expand: true});
+        this.actor = new St.BoxLayout({style_class: 'nublet-card nublet-weather', vertical: true, x_expand: true});
         this._client?.connectObject('changed', () => this._render(), this);
         this._render();
     }
@@ -42,7 +42,7 @@ export class WeatherView {
 
         const now = new St.BoxLayout({style_class: 'nublet-weather-now'});
         now.add_child(new St.Icon({icon_name: info.get_symbolic_icon_name(), style_class: 'nublet-weather-icon'}));
-        const text = new St.BoxLayout({orientation: Clutter.Orientation.VERTICAL, y_align: Clutter.ActorAlign.CENTER, x_expand: true});
+        const text = new St.BoxLayout({vertical: true, y_align: Clutter.ActorAlign.CENTER, x_expand: true});
         text.add_child(new St.Label({text: info.get_temp_summary(), style_class: 'nublet-weather-temp'}));
         text.add_child(new St.Label({text: `${info.get_weather_summary()} · ${info.get_location_name()}`, style_class: 'nublet-dim'}));
         now.add_child(text);
@@ -54,7 +54,7 @@ export class WeatherView {
             const [ok, timestamp] = forecast.get_value_update();
             if (!ok || timestamp < nowSeconds)
                 continue;
-            const hour = new St.BoxLayout({orientation: Clutter.Orientation.VERTICAL, style_class: 'nublet-weather-hour', x_expand: true});
+            const hour = new St.BoxLayout({vertical: true, style_class: 'nublet-weather-hour', x_expand: true});
             hour.add_child(new St.Label({text: GLib.DateTime.new_from_unix_local(timestamp).format('%H:%M'), style_class: 'nublet-dim nublet-small', x_align: Clutter.ActorAlign.CENTER}));
             hour.add_child(new St.Icon({icon_name: forecast.get_symbolic_icon_name(), icon_size: 16, x_align: Clutter.ActorAlign.CENTER}));
             hour.add_child(new St.Label({text: forecast.get_temp_summary(), style_class: 'nublet-small', x_align: Clutter.ActorAlign.CENTER}));

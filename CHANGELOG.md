@@ -1,7 +1,10 @@
 # Changelog
 
-## Unreleased
+## 1.1 — 2026-10-26
 
+- Gmail tab works: reads unread mail over IMAP with the GNOME Online Accounts token, since Google's REST API is not enabled for GNOME's OAuth client (#2).
+- Runs on GNOME Shell 46 to 50, so Zorin OS 18, Ubuntu 24.04, Debian 13 and other GNOME distros work, not just Shell 50.
+- Gmail and GitHub tabs no longer touch destroyed widgets when the extension is turned off mid-fetch.
 - Claude sessions running in a Tilework tile show the tile's name, and clicking one zooms Tilework to that tile.
 
 ## 1.0 — 2026-10-25

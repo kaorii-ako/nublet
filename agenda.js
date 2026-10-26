@@ -26,7 +26,7 @@ export class AgendaView {
         this.title = AgendaView.title;
         this.icon = AgendaView.icon;
         this._host = host;
-        this.actor = new St.BoxLayout({style_class: 'nublet-session-list', orientation: Clutter.Orientation.VERTICAL, x_expand: true});
+        this.actor = new St.BoxLayout({style_class: 'nublet-session-list', vertical: true, x_expand: true});
         this._source = new Calendar.DBusEventSource();
         this._source.connectObject(
             'changed', () => this._render(),

@@ -176,7 +176,7 @@ class Island extends St.Widget {
     _buildContent() {
         this._content = new St.BoxLayout({
             style_class: 'nublet-content',
-            orientation: Clutter.Orientation.VERTICAL,
+            vertical: true,
             opacity: 0,
             visible: false,
             pivot_point: new Graphene.Point({x: 0.5, y: 0}),
@@ -211,7 +211,7 @@ class Island extends St.Widget {
         this._header.add_child(this._tabs);
         this._header.add_child(gear);
 
-        this._stack = new St.BoxLayout({orientation: Clutter.Orientation.VERTICAL, x_expand: true});
+        this._stack = new St.BoxLayout({vertical: true, x_expand: true});
         this._scroll = new St.ScrollView({
             style_class: 'nublet-scroll',
             hscrollbar_policy: St.PolicyType.NEVER,

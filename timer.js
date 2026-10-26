@@ -25,7 +25,7 @@ export class TimerView {
         this._endsAt = 0;
         this._tickId = 0;
 
-        this.actor = new St.BoxLayout({style_class: 'nublet-card nublet-timer', orientation: Clutter.Orientation.VERTICAL, x_expand: true});
+        this.actor = new St.BoxLayout({style_class: 'nublet-card nublet-timer', vertical: true, x_expand: true});
         this._display = new St.Label({style_class: 'nublet-timer-display', x_align: Clutter.ActorAlign.CENTER});
         const presets = new St.BoxLayout({style_class: 'nublet-actions', x_align: Clutter.ActorAlign.CENTER});
         for (const minutes of PRESETS) {

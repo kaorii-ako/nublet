@@ -2,8 +2,8 @@
   "uuid": "nublet@kaorii-ako",
   "name": "Nublet",
   "description": "Turns the clock in the top bar into a black pill that morphs to show what is happening: Claude Code sessions with approve and deny, now playing, volume, timers, headphones battery, mic and camera in use. Click it for tabs with system stats, media, weather, calendar, clipboard history, Gmail and GitHub, grouped into Dev and Life presets.",
-  "shell-version": ["50"],
+  "shell-version": ["46", "47", "48", "49", "50"],
   "url": "https://github.com/kaorii-ako/nublet",
   "settings-schema": "org.gnome.shell.extensions.nublet",
-  "version-name": "1.0"
+  "version-name": "1.1"
 }

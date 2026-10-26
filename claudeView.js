@@ -54,7 +54,7 @@ export class ClaudeView {
 
         this.actor = new St.BoxLayout({
             style_class: 'nublet-session-list',
-            orientation: Clutter.Orientation.VERTICAL,
+            vertical: true,
             x_expand: true,
         });
         this._empty = new St.Label({text: 'No Claude sessions', style_class: 'nublet-empty'});
@@ -168,7 +168,7 @@ export class ClaudeView {
     _createRow() {
         const actor = new St.BoxLayout({
             style_class: 'nublet-card nublet-session',
-            orientation: Clutter.Orientation.VERTICAL,
+            vertical: true,
             x_expand: true,
         });
         const head = new St.BoxLayout({style_class: 'nublet-session-head'});
@@ -221,7 +221,7 @@ export class ClaudeView {
     }
 
     _requestBlock(row) {
-        const block = new St.BoxLayout({style_class: 'nublet-request-block', orientation: Clutter.Orientation.VERTICAL});
+        const block = new St.BoxLayout({style_class: 'nublet-request-block', vertical: true});
         const request = new St.Label({text: `${row.session.tool}  ${row.session.detail}`, style_class: 'nublet-request'});
         request.clutter_text.line_wrap = true;
         request.clutter_text.line_wrap_mode = Pango.WrapMode.WORD_CHAR;
