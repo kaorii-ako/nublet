@@ -4,6 +4,7 @@ import {hasNubletHooks, withNubletHooks, withoutNubletHooks} from './hookInstall
 import {htmlUrl} from './links.js';
 import {TILE_ID, focusLine, tileTitle} from './tilework.js';
 import {cpuPercent, formatRate, parseCpu, parseMem, parseNet} from './statsParse.js';
+import {decodeHeader, parseFetch, parseSearch, xoauth2} from './imapParse.js';
 
 function assert(ok, message) {
     if (!ok)
@@ -80,7 +81,6 @@ const legacy = {hooks: {Stop: [{hooks: [{type: 'command', command: 'gjs', args: 
 assert(hasNubletHooks(legacy), 'recognises hooks from the old Isle name');
 assert(withNubletHooks(legacy, '/ext/nublet-claude-hook.js').hooks.Stop.length === 1, 'upgrading from Isle replaces the old hook');
 
-print('parsers: all checks passed');
 
 const workspace = JSON.stringify({version: 1, tiles: [{id: 'tile-1', title: 'Builder'}, {id: 'tile-2'}]});
 assert(tileTitle(workspace, 'tile-1') === 'Builder', 'tile title from workspace.json');
@@ -88,3 +88,25 @@ assert(tileTitle(workspace, 'tile-2') === '' && tileTitle(workspace, 'nope') ===
 assert(tileTitle('{not json', 'tile-1') === '' && tileTitle('null', 'tile-1') === '', 'bad workspace.json');
 assert(focusLine('tile-1') === '{"tile":"tile-1","event":"Focus"}\n', 'focus line for Tilework');
 assert(TILE_ID.test('tile-1') && !TILE_ID.test('a"b') && !TILE_ID.test(''), 'tile id check');
+
+assert(xoauth2('a@b.c', 'T') === 'dXNlcj1hQGIuYwFhdXRoPUJlYXJlciBUAQE=', 'xoauth2 string');
+assert(parseSearch(['* SEARCH 3 17 42']).join() === '3,17,42' && !parseSearch(['* SEARCH']).length, 'search uids');
+assert(decodeHeader('=?UTF-8?B?w6l0w6k=?= =?utf-8?Q?_caf=C3=A9?= plain') === 'été café plain', 'encoded words');
+assert(decodeHeader('=?bogus-charset?B?eA==?=') === '=?bogus-charset?B?eA==?=', 'unknown charset kept');
+const fetched = parseFetch([
+    '* 1 FETCH (X-GM-THRID 1781234567890123456 UID 45 BODY[HEADER.FIELDS (SUBJECT FROM)] {60}',
+    'Subject: Long subject',
+    ' folded here',
+    'From: "Bob B" <bob@x.com>',
+    '',
+    ')',
+    '* 2 FETCH (UID 46 BODY[HEADER.FIELDS (SUBJECT FROM)] {20}',
+    'From: amy@x.com',
+    '',
+    ' X-GM-THRID 255)',
+]);
+assert(fetched.length === 2, 'two messages');
+assert(fetched[0].uid === 45 && fetched[0].thread === '18b83766f0bcbac0', `thread hex (${fetched[0].thread})`);
+assert(fetched[0].subject === 'Long subject folded here' && fetched[0].from === 'Bob B', 'unfolded subject, display name');
+assert(fetched[1].thread === 'ff' && fetched[1].subject === '' && fetched[1].from === 'amy@x.com', 'trailing thrid, missing subject');
+print('parsers: all checks passed');
