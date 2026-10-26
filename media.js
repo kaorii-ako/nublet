@@ -77,7 +77,7 @@ export class MediaView {
     _buildActor() {
         this.actor = new St.BoxLayout({style_class: 'nublet-card nublet-media', x_expand: true});
         this._artIcon = new St.Icon({style_class: 'nublet-media-art', gicon: PLACEHOLDER});
-        const right = new St.BoxLayout({orientation: Clutter.Orientation.VERTICAL, x_expand: true, style_class: 'nublet-media-info'});
+        const right = new St.BoxLayout({vertical: true, x_expand: true, style_class: 'nublet-media-info'});
         this._title = new St.Label({style_class: 'nublet-media-title', text: 'Nothing playing'});
         this._title.clutter_text.ellipsize = Pango.EllipsizeMode.END;
         this._artist = new St.Label({style_class: 'nublet-dim'});

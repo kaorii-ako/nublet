@@ -1,4 +1,3 @@
-import Clutter from 'gi://Clutter';
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import Pango from 'gi://Pango';
@@ -17,7 +16,7 @@ export class FeedView {
         this._items = [];
         this._message = 'Loading…';
 
-        this.actor = new St.BoxLayout({style_class: 'nublet-session-list', orientation: Clutter.Orientation.VERTICAL, x_expand: true});
+        this.actor = new St.BoxLayout({style_class: 'nublet-session-list', vertical: true, x_expand: true});
         this._render();
         this._refresh();
         this._pollId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, POLL_SECONDS, () => {
@@ -29,6 +28,8 @@ export class FeedView {
     async _refresh() {
         try {
             const result = await this.fetch(this._cancellable);
+            if (this._cancellable.is_cancelled())
+                return;
             if (typeof result === 'string') {
                 this._items = [];
                 this._message = result;
@@ -42,6 +43,9 @@ export class FeedView {
                 return;
             this._message = `Couldn't load: ${e.message}`;
         }
+        // Destroyed while the fetch was in flight.
+        if (this._cancellable.is_cancelled())
+            return;
         this._render();
     }
 
@@ -68,7 +72,7 @@ export class FeedView {
             this.actor.add_child(new St.Label({text: this._message, style_class: 'nublet-empty'}));
         for (const item of this._items) {
             const button = new St.Button({style_class: 'nublet-card nublet-feed-item', can_focus: true, x_expand: true, accessible_name: item.title});
-            const box = new St.BoxLayout({orientation: Clutter.Orientation.VERTICAL, x_expand: true});
+            const box = new St.BoxLayout({vertical: true, x_expand: true});
             const title = new St.Label({text: item.title, style_class: 'nublet-feed-title'});
             title.clutter_text.ellipsize = Pango.EllipsizeMode.END;
             const subtitle = new St.Label({text: item.subtitle, style_class: 'nublet-dim nublet-small'});

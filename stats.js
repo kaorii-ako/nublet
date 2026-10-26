@@ -1,4 +1,3 @@
-import Clutter from 'gi://Clutter';
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import St from 'gi://St';
@@ -55,13 +54,13 @@ export class StatsView {
         this._sensors = null;
         this._previous = null;
 
-        this.actor = new St.BoxLayout({style_class: 'nublet-grid', orientation: Clutter.Orientation.VERTICAL, x_expand: true});
+        this.actor = new St.BoxLayout({style_class: 'nublet-grid', vertical: true, x_expand: true});
         this._tiles = {};
         for (const row of [['cpu', 'gpu', 'ram'], ['nvme', 'down', 'up']]) {
             const box = new St.BoxLayout({style_class: 'nublet-grid-row', x_expand: true});
             box.layout_manager.homogeneous = true;
             for (const id of row) {
-                const tile = new St.BoxLayout({style_class: 'nublet-card nublet-tile', orientation: Clutter.Orientation.VERTICAL, x_expand: true});
+                const tile = new St.BoxLayout({style_class: 'nublet-card nublet-tile', vertical: true, x_expand: true});
                 const label = new St.Label({style_class: 'nublet-dim nublet-small', text: {
                     cpu: 'CPU', gpu: 'GPU', ram: 'Memory', nvme: 'NVMe', down: 'Download', up: 'Upload',
                 }[id]});

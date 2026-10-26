@@ -18,7 +18,7 @@ export class ClipboardView {
         this._items = [];
         this._clipboard = St.Clipboard.get_default();
 
-        this.actor = new St.BoxLayout({style_class: 'nublet-session-list', orientation: Clutter.Orientation.VERTICAL, x_expand: true});
+        this.actor = new St.BoxLayout({style_class: 'nublet-session-list', vertical: true, x_expand: true});
         const header = new St.BoxLayout({style_class: 'nublet-section-head'});
         header.add_child(new St.Label({text: 'Kept in memory only, cleared on logout', style_class: 'nublet-dim nublet-small', x_expand: true, y_align: Clutter.ActorAlign.CENTER}));
         const clear = new St.Button({label: 'Clear', style_class: 'nublet-action', can_focus: true});
@@ -27,7 +27,7 @@ export class ClipboardView {
             this._render();
         });
         header.add_child(clear);
-        this._list = new St.BoxLayout({orientation: Clutter.Orientation.VERTICAL, style_class: 'nublet-session-list', x_expand: true});
+        this._list = new St.BoxLayout({vertical: true, style_class: 'nublet-session-list', x_expand: true});
         this.actor.add_child(header);
         this.actor.add_child(this._list);
 
