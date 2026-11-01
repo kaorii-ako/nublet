@@ -155,6 +155,7 @@
 .nublet-segment:checked {
   color: #000;
   background-color: #fff;
+  box-shadow: 0 1px 0 #8e8e93;
 }
 
 .nublet-tabs {
@@ -192,10 +193,12 @@
 
 .nublet-card {
   padding: 10px 12px;
-  border-radius: 14px;
+  border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  background-color: rgba(255, 255, 255, 0.05);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  background-gradient-direction: vertical;
+  background-gradient-start: rgba(255, 255, 255, 0.075);
+  background-gradient-end: rgba(255, 255, 255, 0.04);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09);
 }
 
 .nublet-dim {
@@ -269,34 +272,50 @@
   spacing: 6px;
 }
 
+/* Tactile buttons: lit face, firm edge below; on press the edge vanishes and the label sinks 1px.
+   St parses one box-shadow per rule, so each state uses a single shadow. */
 .nublet-action {
   color: #fff;
   font-weight: 600;
-  padding: 5px 12px;
+  padding: 5px 13px;
   border-radius: 99px;
-  background-color: rgba(255, 255, 255, 0.12);
-  transition-duration: 120ms;
+  background-gradient-direction: vertical;
+  background-gradient-start: rgba(255, 255, 255, 0.20);
+  background-gradient-end: rgba(255, 255, 255, 0.11);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.55);
+  transition-duration: 90ms;
 }
 
 .nublet-action:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-gradient-start: rgba(255, 255, 255, 0.28);
+  background-gradient-end: rgba(255, 255, 255, 0.16);
 }
 
 .nublet-action:active {
-  background-color: rgba(255, 255, 255, 0.28);
+  background-gradient-start: rgba(255, 255, 255, 0.10);
+  background-gradient-end: rgba(255, 255, 255, 0.16);
+  box-shadow: none;
+  padding: 6px 13px 4px;
 }
 
 .nublet-action.nublet-allow {
   color: #000;
-  background-color: #fff;
+  background-gradient-start: #ffffff;
+  background-gradient-end: #dcdce0;
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 2px 0 #8e8e93;
 }
 
 .nublet-action.nublet-allow:hover {
-  background-color: rgba(255, 255, 255, 0.86);
+  background-gradient-end: #e8e8ec;
 }
 
 .nublet-action.nublet-allow:active {
-  background-color: rgba(255, 255, 255, 0.72);
+  background-gradient-start: #d0d0d5;
+  background-gradient-end: #e4e4e8;
+  box-shadow: none;
+  padding: 6px 13px 4px;
 }
 
 .nublet-action.nublet-deny {
@@ -307,55 +326,120 @@
   spacing: 14px;
 }
 
-.nublet-media-art {
-  icon-size: 96px;
-  color: rgba(255, 255, 255, 0.35);
-}
-
-.nublet-media-info {
-  spacing: 4px;
-}
-
-.nublet-media-title {
-  color: #fff;
-  font-weight: 700;
-  font-size: 1.1em;
-  letter-spacing: -0.2px;
-}
-
 .nublet-media-lyric {
   color: #fff;
   font-weight: 500;
 }
 
-.nublet-progress {
-  height: 4px;
-  margin-top: 6px;
-  border-radius: 2px;
-  background-color: rgba(255, 255, 255, 0.2);
+/* Cassette (media view): text and controls laid over the cairo-drawn tape. */
+.nublet-tape-kicker,
+.nublet-tape-badge,
+.nublet-tape-serial {
+  font-family: monospace;
+  font-weight: 700;
 }
 
-.nublet-progress-fill {
-  height: 4px;
+.nublet-tape-kicker {
+  color: rgba(32, 32, 32, 0.85);
+  font-size: 8px;
+  letter-spacing: 1px;
+}
+
+.nublet-tape-title {
+  color: #202020;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.6px;
+}
+
+.nublet-tape-side {
+  spacing: 5px;
+}
+
+.nublet-tape-badge {
+  color: #fcfcfc;
+  background-color: #202020;
+  border-radius: 99px;
+  padding: 2px 6px;
+  font-size: 8px;
+  letter-spacing: 0.6px;
+}
+
+.nublet-tape-serial {
+  color: rgba(32, 32, 32, 0.7);
+  font-size: 7px;
+  letter-spacing: 0.6px;
+}
+
+.nublet-tape-rail {
   border-radius: 2px;
+  background-color: rgba(32, 32, 32, 0.28);
+}
+
+.nublet-tape-fill {
+  border-radius: 2px;
+  background-color: #202020;
+}
+
+.nublet-tape-thumb {
+  border-radius: 99px;
+  border: 2px solid #fcfcfc;
   background-color: #fff;
+  box-shadow: 0 1px 4px rgba(37, 33, 29, 0.38);
 }
 
-.nublet-media-controls {
-  spacing: 12px;
+.nublet-tape-time {
+  color: #202020;
+  font-size: 10px;
+  font-feature-settings: "tnum";
 }
 
-.nublet-media-controls .nublet-icon-button {
-  color: #fff;
+.nublet-tape-button {
+  width: 24px;
+  height: 24px;
+  border-radius: 99px;
+  border: 1px solid #82827c;
+  background-color: #63635e;
+  color: #fdfdfc;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.28);
+  transition-duration: 150ms;
 }
 
-.nublet-media-controls StIcon {
-  icon-size: 20px;
+.nublet-tape-button StIcon {
+  icon-size: 12px;
 }
 
-.nublet-media-play {
-  padding: 8px;
-  background-color: rgba(255, 255, 255, 0.12);
+.nublet-tape-button:hover {
+  background-color: #7c7b74;
+}
+
+.nublet-tape-button:active {
+  background-color: #57574f;
+  box-shadow: none;
+}
+
+.nublet-tape-button:insensitive {
+  color: rgba(253, 253, 252, 0.45);
+}
+
+.nublet-tape-play {
+  width: 30px;
+  height: 30px;
+  border-color: rgba(188, 187, 181, 0.5);
+  background-color: #8d8d86;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.32);
+}
+
+.nublet-tape-play StIcon {
+  icon-size: 14px;
+}
+
+.nublet-tape-play:hover {
+  background-color: #82827c;
+}
+
+.nublet-tape-play:active {
+  background-color: #74746d;
 }
 
 .nublet-grid {

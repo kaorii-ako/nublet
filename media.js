@@ -1,3 +1,4 @@
+import Cairo from 'cairo';
 import Clutter from 'gi://Clutter';
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
@@ -31,6 +32,69 @@ function formatTime(seconds) {
 
 function isCancelled(e) {
     return e.matches?.(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED);
+}
+
+// Cassette geometry, the dqnamo player scaled to 0.7 (aspect 1.58).
+const W = 372, H = 236;
+const LX = 32, LY = 22, LW = W - 64, LH = 157;
+const BAY_X = W * 0.27, BAY_W = W * 0.46, BAY_H = 38, BAY_Y = H - 8 - BAY_H;
+
+function rgb(hex) {
+    return [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255);
+}
+
+function roundRect(cr, x, y, w, h, r) {
+    cr.newSubPath();
+    cr.arc(x + w - r, y + r, r, -Math.PI / 2, 0);
+    cr.arc(x + w - r, y + h - r, r, 0, Math.PI / 2);
+    cr.arc(x + r, y + h - r, r, Math.PI / 2, Math.PI);
+    cr.arc(x + r, y + r, r, Math.PI, 1.5 * Math.PI);
+    cr.closePath();
+}
+
+function screw(cr, x, y) {
+    const r = 6;
+    const g = new Cairo.RadialGradient(x - r * 0.28, y - r * 0.4, 0, x, y, r);
+    g.addColorStopRGB(0, ...rgb('#5f5f5c'));
+    g.addColorStopRGB(0.48, ...rgb('#30302e'));
+    g.addColorStopRGB(0.78, ...rgb('#171716'));
+    cr.arc(x, y, r, 0, 2 * Math.PI);
+    cr.setSource(g);
+    cr.fillPreserve();
+    cr.setSourceRGB(...rgb('#060606'));
+    cr.setLineWidth(1);
+    cr.stroke();
+    cr.setSourceRGB(...rgb('#1d1d1b'));
+    cr.setLineWidth(1.7);
+    for (const a of [Math.PI / 4, -Math.PI / 4]) {
+        const dx = Math.cos(a) * r * 0.64, dy = Math.sin(a) * r * 0.64;
+        cr.moveTo(x - dx, y - dy);
+        cr.lineTo(x + dx, y + dy);
+        cr.stroke();
+    }
+}
+
+// Reel hub in a 100-unit box, as in the original SVG: white disc, six teeth, dark rim.
+function reel(cr, x, y, radius, angle) {
+    cr.save();
+    cr.translate(x, y);
+    cr.scale(radius / 50, radius / 50);
+    cr.rotate(angle);
+    cr.arc(0, 0, 48, 0, 2 * Math.PI);
+    cr.setSourceRGB(...rgb('#fcfcfc'));
+    cr.fill();
+    cr.setSourceRGB(...rgb('#1b1a18'));
+    for (let i = 0; i < 6; i++) {
+        cr.save();
+        cr.rotate(i * Math.PI / 3);
+        roundRect(cr, -4, -47, 8, 11, 2);
+        cr.fill();
+        cr.restore();
+    }
+    cr.setLineWidth(3);
+    cr.arc(0, 0, 48, 0, 2 * Math.PI);
+    cr.stroke();
+    cr.restore();
 }
 
 export class MediaView {
@@ -74,45 +138,178 @@ export class MediaView {
         });
     }
 
+    // A copy of dqnamo's Cassette Player: cairo draws the shell, label, reels and tape; St overlays text and controls.
     _buildActor() {
-        this.actor = new St.BoxLayout({style_class: 'nublet-card nublet-media', x_expand: true});
-        this._artIcon = new St.Icon({style_class: 'nublet-media-art', gicon: PLACEHOLDER});
-        const right = new St.BoxLayout({vertical: true, x_expand: true, style_class: 'nublet-media-info'});
-        this._title = new St.Label({style_class: 'nublet-media-title', text: 'Nothing playing'});
-        this._title.clutter_text.ellipsize = Pango.EllipsizeMode.END;
-        this._artist = new St.Label({style_class: 'nublet-dim'});
-        this._artist.clutter_text.ellipsize = Pango.EllipsizeMode.END;
-        this._line = new St.Label({style_class: 'nublet-media-lyric', visible: false});
-        this._line.clutter_text.ellipsize = Pango.EllipsizeMode.END;
+        this.actor = new St.BoxLayout({style_class: 'nublet-media', vertical: true, x_expand: true});
+        const tape = new St.Widget({layout_manager: new Clutter.FixedLayout(), width: W, height: H, x_align: Clutter.ActorAlign.CENTER});
+        this._drawing = new St.DrawingArea({width: W, height: H});
+        this._drawing.connect('repaint', area => this._paint(area));
+        tape.add_child(this._drawing);
+        const place = (actor, x, y) => {
+            actor.set_position(Math.round(x), Math.round(y));
+            tape.add_child(actor);
+            return actor;
+        };
+        const ellipsized = (style, width) => {
+            const label = new St.Label({style_class: style, width});
+            label.clutter_text.ellipsize = Pango.EllipsizeMode.END;
+            return label;
+        };
 
-        this._track = new St.Widget({style_class: 'nublet-progress', reactive: true, x_expand: true, accessible_name: 'Seek'});
-        this._fill = new St.Widget({style_class: 'nublet-progress-fill'});
+        this._artist = place(ellipsized('nublet-tape-kicker', LW - 110), LX + 13, LY + 13);
+        this._title = place(ellipsized('nublet-tape-title', LW - 100), LX + 13, LY + 25);
+        this._title.text = 'Nothing playing';
+        const side = new St.BoxLayout({vertical: true, width: 90, style_class: 'nublet-tape-side'});
+        side.add_child(new St.Label({style_class: 'nublet-tape-badge', text: 'SIDE A', x_align: Clutter.ActorAlign.END}));
+        this._source = new St.Label({style_class: 'nublet-tape-serial', x_align: Clutter.ActorAlign.END});
+        side.add_child(this._source);
+        place(side, LX + LW - 13 - 90, LY + 11);
+
+        this._track = place(new St.Widget({reactive: true, width: LW - 26, height: 20, accessible_name: 'Seek'}), LX + 13, LY + 108);
+        this._track.add_child(new St.Widget({style_class: 'nublet-tape-rail', width: LW - 26, height: 3, y: 9}));
+        this._fill = new St.Widget({style_class: 'nublet-tape-fill', height: 3, y: 9});
+        this._thumb = new St.Widget({style_class: 'nublet-tape-thumb', width: 13, height: 13, y: 4});
         this._track.add_child(this._fill);
+        this._track.add_child(this._thumb);
         this._track.connect('button-press-event', (actor, event) => this._seekTo(event));
-        this._track.connect('notify::width', () => this._syncProgress());
-        const times = new St.BoxLayout({style_class: 'nublet-media-times'});
-        this._elapsed = new St.Label({style_class: 'nublet-dim nublet-small', x_expand: true});
-        this._length = new St.Label({style_class: 'nublet-dim nublet-small'});
+        const times = place(new St.BoxLayout({width: LW - 26}), LX + 13, LY + 129);
+        this._elapsed = new St.Label({style_class: 'nublet-tape-time', x_expand: true});
+        this._length = new St.Label({style_class: 'nublet-tape-time'});
         times.add_child(this._elapsed);
         times.add_child(this._length);
 
-        const controls = new St.BoxLayout({style_class: 'nublet-media-controls', x_align: Clutter.ActorAlign.CENTER});
         this._prev = this._controlButton('media-skip-backward-symbolic', 'Previous', 'Previous');
         this._playPause = this._controlButton('media-playback-start-symbolic', 'Play or pause', 'PlayPause');
         this._next = this._controlButton('media-skip-forward-symbolic', 'Next', 'Next');
-        this._playPause.add_style_class_name('nublet-media-play');
-        for (const button of [this._prev, this._playPause, this._next])
-            controls.add_child(button);
+        this._playPause.add_style_class_name('nublet-tape-play');
+        place(this._prev, 143 - 12, BAY_Y + 19 - 12);
+        place(this._playPause, W / 2 - 15, BAY_Y + 19 - 15);
+        place(this._next, W - 143 - 12, BAY_Y + 19 - 12);
 
-        for (const child of [this._title, this._artist, this._line, this._track, times, controls])
-            right.add_child(child);
-        this.actor.add_child(this._artIcon);
-        this.actor.add_child(right);
+        this._line = new St.Label({style_class: 'nublet-media-lyric', visible: false, x_align: Clutter.ActorAlign.CENTER});
+        this._line.clutter_text.ellipsize = Pango.EllipsizeMode.END;
+        this.actor.add_child(tape);
+        this.actor.add_child(this._line);
+
+        this._spin = new Clutter.Timeline({actor: this.actor, duration: 1000, repeat_count: -1});
+        this._spin.connect('new-frame', () => this._drawing.queue_repaint());
+    }
+
+    _paint(area) {
+        const cr = area.get_context();
+        const player = this._player;
+        const length = (unpack(player?.metadata['mpris:length']) ?? 0) / 1e6;
+        const now = this._now(player);
+        const progress = length > 0 ? Math.min(1, Math.max(0, now / length)) : 0;
+        const angle = St.Settings.get().enable_animations ? (now * 300 % 360) * Math.PI / 180 : 0;
+
+        // Shell: dark plastic, 165deg gradient, hairline inner frame.
+        let g = new Cairo.LinearGradient(0, 0, W * 0.27, H);
+        g.addColorStopRGB(0, ...rgb('#373735'));
+        g.addColorStopRGB(0.52, ...rgb('#20201f'));
+        g.addColorStopRGB(1, ...rgb('#0e0e0d'));
+        roundRect(cr, 0.5, 0.5, W - 1, H - 1, 13);
+        cr.setSource(g);
+        cr.fillPreserve();
+        cr.setSourceRGB(...rgb('#050505'));
+        cr.setLineWidth(1);
+        cr.stroke();
+        roundRect(cr, 1.5, 1.5, W - 3, H - 3, 12);
+        g = new Cairo.LinearGradient(0, 0, 0, 6);
+        g.addColorStopRGBA(0, 1, 1, 1, 0.2);
+        g.addColorStopRGBA(1, 1, 1, 1, 0);
+        cr.setSource(g);
+        cr.stroke();
+        roundRect(cr, 4.5, 4.5, W - 9, H - 9, 9);
+        cr.setSourceRGBA(1, 1, 1, 0.12);
+        cr.stroke();
+
+        for (const [x, y] of [[15.5, 15.5], [W - 15.5, 15.5], [15.5, H - 15.5], [W - 15.5, H - 15.5]])
+            screw(cr, x, y);
+
+        // Label with the three colour stripes behind the reel window.
+        roundRect(cr, LX, LY, LW, LH, 9);
+        cr.setSourceRGB(...rgb('#fcfcfc'));
+        cr.fill();
+        cr.save();
+        roundRect(cr, LX, LY, LW, LH, 9);
+        cr.clip();
+        ['#22c55e', '#14b8a6', '#3b82f6'].forEach((color, i) => {
+            cr.setSourceRGB(...rgb(color));
+            cr.rectangle(LX, LY + 61 + i * 10, LW, 7);
+            cr.fill();
+        });
+        cr.restore();
+
+        // Reel window capsule.
+        const cx = LX + LW * 0.175, cw = LW * 0.65, cy = LY + 52, ch = 46;
+        roundRect(cr, cx - 3, cy - 3, cw + 6, ch + 6, (ch + 6) / 2);
+        cr.setSourceRGB(...rgb('#fcfcfc'));
+        cr.fill();
+        roundRect(cr, cx, cy, cw, ch, ch / 2);
+        cr.setSourceRGB(...rgb('#1b1a18'));
+        cr.fillPreserve();
+        g = new Cairo.LinearGradient(0, cy, 0, cy + ch);
+        g.addColorStopRGBA(0, 1, 1, 1, 0.13);
+        g.addColorStopRGBA(0.45, 1, 1, 1, 0);
+        cr.setSource(g);
+        cr.fill();
+
+        // Tape window: spools grow and shrink with progress, five guide lines on top.
+        const tx = cx + cw * 0.28, tw = cw * 0.44, ty = cy + ch * 0.12, th = ch * 0.76;
+        const leftReel = cx + ch / 2, rightReel = cx + cw - ch / 2, mid = cy + ch / 2;
+        cr.save();
+        roundRect(cr, tx, ty, tw, th, 3);
+        cr.setSourceRGB(...rgb('#393631'));
+        cr.fillPreserve();
+        cr.clip();
+        for (const [x, scale] of [[leftReel, 1 - progress * 0.4], [rightReel, 0.6 + progress * 0.4]]) {
+            const r = th * 1.8 * scale;
+            cr.arc(x, mid, r, 0, 2 * Math.PI);
+            cr.setSourceRGB(...rgb('#0d0d0d'));
+            cr.fill();
+            cr.setSourceRGB(...rgb('#171717'));
+            cr.setLineWidth(1);
+            for (let ring = r - 2; ring > 4; ring -= 4) {
+                cr.arc(x, mid, ring, 0, 2 * Math.PI);
+                cr.stroke();
+            }
+        }
+        cr.setSourceRGBA(224 / 255, 215 / 255, 195 / 255, 0.28);
+        for (let i = 1; i <= 5; i++)
+            cr.rectangle(tx + tw * i / 6 - 1, mid - th * 0.21, 2, th * 0.42);
+        cr.fill();
+        g = new Cairo.LinearGradient(0, ty, 0, ty + th);
+        g.addColorStopRGBA(0, 1, 1, 1, 0.1);
+        g.addColorStopRGBA(0.42, 1, 1, 1, 0);
+        cr.setSource(g);
+        cr.paint();
+        cr.restore();
+        roundRect(cr, tx, ty, tw, th, 3);
+        cr.setSourceRGB(...rgb('#11100f'));
+        cr.setLineWidth(2);
+        cr.stroke();
+
+        for (const x of [leftReel, rightReel])
+            reel(cr, x, mid, ch * 0.39, angle);
+
+        // Control bay: the trapezoid notch under the label.
+        cr.moveTo(BAY_X + BAY_W * 0.13, BAY_Y);
+        cr.lineTo(BAY_X + BAY_W * 0.87, BAY_Y);
+        cr.lineTo(BAY_X + BAY_W, BAY_Y + BAY_H);
+        cr.lineTo(BAY_X, BAY_Y + BAY_H);
+        cr.closePath();
+        g = new Cairo.LinearGradient(0, BAY_Y, 0, BAY_Y + 10);
+        g.addColorStopRGBA(0, 0, 0, 0, 0.5);
+        g.addColorStopRGBA(1, 99 / 255, 99 / 255, 94 / 255, 0.2);
+        cr.setSource(g);
+        cr.fill();
+        cr.$dispose();
     }
 
     _controlButton(iconName, label, method) {
         const button = new St.Button({
-            style_class: 'nublet-icon-button',
+            style_class: 'nublet-tape-button',
             child: new St.Icon({icon_name: iconName}),
             can_focus: true,
             accessible_name: label,
@@ -222,8 +419,8 @@ export class MediaView {
         const title = unpack(meta['xesam:title']) || (player ? 'Unknown title' : 'Nothing playing');
         const artist = (unpack(meta['xesam:artist']) ?? []).join(', ');
         this._title.text = title;
-        this._artist.text = artist;
-        this._artist.visible = !!artist;
+        this._artist.text = artist.toUpperCase();
+        this._source.text = player ? player.name.slice(PREFIX.length).split('.')[0].toUpperCase() : '';
         const playing = player?.status === 'Playing';
         this._playPause.child.icon_name = playing ? 'media-playback-pause-symbolic' : 'media-playback-start-symbolic';
         for (const button of [this._prev, this._playPause, this._next])
@@ -279,7 +476,6 @@ export class MediaView {
         if (url !== this._artUrl)
             return;
         this._art = icon;
-        this._artIcon.gicon = icon;
         this._syncActivity();
     }
 
@@ -347,7 +543,10 @@ export class MediaView {
         this._elapsed.text = formatTime(now);
         this._length.text = length ? formatTime(length) : '';
         const fraction = length > 0 ? Math.min(1, Math.max(0, now / length)) : 0;
-        this._fill.set_size(Math.round(this._track.width * fraction), 4);
+        const x = Math.round((this._track.width - 13) * fraction);
+        this._fill.width = x + 6;
+        this._thumb.x = x;
+        this._drawing.queue_repaint();
     }
 
     _seekTo(event) {
@@ -368,6 +567,10 @@ export class MediaView {
 
     _syncTimers() {
         const run = this._active && this._player?.status === 'Playing';
+        if (run && St.Settings.get().enable_animations)
+            this._spin.start();
+        else
+            this._spin.stop();
         if (run && !this._progressId) {
             this._progressId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 1, () => {
                 this._syncProgress();
@@ -400,6 +603,7 @@ export class MediaView {
         this._players.clear();
         this._soup.abort();
         this._host.setActivity('media', null);
+        this._spin.stop();
         this.actor.destroy();
     }
 }
