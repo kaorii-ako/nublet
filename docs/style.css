@@ -1166,3 +1166,203 @@ section {
     -webkit-backdrop-filter: none;
   }
 }
+
+/* Lenis drives scrolling; native smooth scroll would fight it. */
+html.lenis {
+  scroll-behavior: auto;
+}
+
+/* Cassette: the same tape the extension's Media view draws. */
+.cassette {
+  position: relative;
+  width: calc(100% - 48px);
+  max-width: 520px;
+  margin: auto auto 28px;
+  padding: 22px 32px 0;
+  border-radius: 18px;
+  background: linear-gradient(160deg, #373735, #20201f 52%, #0e0e0d);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.12), 0 24px 48px -20px rgb(0 0 0 / 0.8);
+}
+
+.screw {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #6a6a66, #1d1d1b);
+}
+
+.tape-label {
+  position: relative;
+  overflow: hidden;
+  padding: 16px 18px 12px;
+  border-radius: 10px;
+  background: #fcfcfc;
+  color: #1b1a18;
+}
+
+/* Colour bands run behind the reel window, like the printed label. */
+.tape-label::before {
+  content: "";
+  position: absolute;
+  inset: 58px 0 auto;
+  height: 54px;
+  background: linear-gradient(#22c55e 0 33%, #14b8a6 33% 66%, #3b82f6 66%);
+}
+
+.tape-head,
+.tape-times {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+}
+
+.tape-head small,
+.tape-side small,
+.tape-times {
+  font: 500 10px/1.2 "Geist Mono", ui-monospace, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6b6a66;
+}
+
+.tape-head strong {
+  display: block;
+  font-size: 17px;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.tape-side {
+  display: grid;
+  justify-items: end;
+  gap: 3px;
+}
+
+.tape-side span {
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: #11100f;
+  color: #fff;
+  font: 600 10px/1.4 "Geist Mono", ui-monospace, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tape-window {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 12px 8% 0;
+  padding: 6px 10px;
+  border-radius: 99px;
+  background: #050505;
+}
+
+.reel {
+  flex: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  /* Six spokes cut into a white hub. */
+  background:
+    radial-gradient(circle, #050505 0 5px, transparent 5.5px),
+    repeating-conic-gradient(from 0deg, #fcfcfc 0 40deg, #050505 40deg 60deg);
+  -webkit-mask: radial-gradient(circle, #000 70%, transparent 71%);
+  mask: radial-gradient(circle, #000 70%, transparent 71%);
+  animation: reel 1.2s linear infinite;
+}
+
+.tape-gap {
+  flex: 1;
+  height: 22px;
+  border-radius: 4px;
+  background: repeating-linear-gradient(90deg, #171717 0 calc(20% - 1px), #393631 0 20%);
+}
+
+.cassette.paused .reel {
+  animation-play-state: paused;
+}
+
+@keyframes reel {
+  to { transform: rotate(360deg); }
+}
+
+.tape-seek {
+  position: relative;
+  height: 3px;
+  margin-top: 14px;
+  border-radius: 99px;
+  background: #d9d8d3;
+}
+
+.tape-seek span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #1b1a18;
+  transition: width 300ms linear;
+}
+
+.tape-times {
+  margin-top: 6px;
+}
+
+/* Trapezoid control bay under the label. */
+.tape-bay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  width: 54%;
+  margin: 10px auto 0;
+  padding: 8px 0 10px;
+  clip-path: polygon(13% 0, 87% 0, 100% 100%, 0 100%);
+  background: rgb(99 99 94 / 0.25);
+  box-shadow: inset 0 3px 8px rgb(0 0 0 / 0.5);
+}
+
+.tape-bay button {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #82827c;
+  border-radius: 50%;
+  background: #63635e;
+  color: #fcfcfc;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.2), 0 2px 5px rgb(0 0 0 / 0.28);
+  transition: transform 150ms var(--ease-out), background-color 150ms ease;
+}
+
+.tape-bay .tape-play {
+  width: 40px;
+  height: 40px;
+  border-color: rgb(188 187 181 / 0.5);
+  background: #8d8d86;
+  font-size: 16px;
+}
+
+.tape-bay button:active {
+  transform: scale(0.96);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tape-bay button:hover {
+    background: #7c7b74;
+  }
+
+  .tape-bay .tape-play:hover {
+    background: #82827c;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reel {
+    animation: none;
+  }
+}

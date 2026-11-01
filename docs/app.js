@@ -191,6 +191,64 @@ function setupCopy() {
     });
 }
 
+function setupLenis() {
+    // Native scrolling stays for reduced motion and if the CDN script failed to load.
+    if (!window.Lenis || matchMedia('(prefers-reduced-motion: reduce)').matches)
+        return;
+    const lenis = new Lenis({lerp: 0.1});
+    const raf = time => {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+    };
+    requestAnimationFrame(raf);
+    document.addEventListener('click', event => {
+        const link = event.target.closest('a[href^="#"]');
+        if (!link)
+            return;
+        event.preventDefault();
+        const hash = link.getAttribute('href');
+        lenis.scrollTo(hash === '#top' ? 0 : hash, {offset: -48});
+        history.replaceState(null, '', hash);
+    });
+}
+
+function setupCassette() {
+    const tape = document.querySelector('[data-cassette]');
+    if (!tape)
+        return;
+    const LENGTH = 214;
+    let at = 83;
+    const play = tape.querySelector('[data-play]');
+    const fill = tape.querySelector('[data-fill]');
+    const elapsed = tape.querySelector('[data-elapsed]');
+    const render = () => {
+        fill.style.width = `${(at / LENGTH) * 100}%`;
+        elapsed.textContent = `${Math.floor(at / 60)}:${String(at % 60).padStart(2, '0')}`;
+    };
+    play.addEventListener('click', () => {
+        const paused = tape.classList.toggle('paused');
+        play.setAttribute('aria-label', paused ? 'Play' : 'Pause');
+        play.querySelector('i').className = `ph-fill ${paused ? 'ph-play' : 'ph-pause'}`;
+    });
+    tape.querySelector('[data-prev]').addEventListener('click', () => {
+        at = 0;
+        render();
+    });
+    tape.querySelector('[data-next]').addEventListener('click', () => {
+        at = Math.min(at + 30, LENGTH);
+        render();
+    });
+    setInterval(() => {
+        if (tape.classList.contains('paused') || document.hidden)
+            return;
+        at = at >= LENGTH ? 0 : at + 1;
+        render();
+    }, 1000);
+    render();
+}
+
 setupPill();
 setupReveal();
 setupCopy();
+setupLenis();
+setupCassette();
