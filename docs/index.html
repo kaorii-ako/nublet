@@ -12,7 +12,9 @@
   <link rel="preload" href="fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
   <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/lenis@1.1.13/dist/lenis.css">
   <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js" defer></script>
   <script src="app.js" defer></script>
 </head>
 <body>
@@ -86,7 +88,26 @@
       <h2 class="section-title">Everything else is one click away.</h2>
       <div class="bento-grid">
         <figure class="tile tile-media">
-          <img src="assets/open_media.webp" width="1360" height="490" alt="The Media tab with album art, title, artist, a seek bar and playback controls" loading="lazy">
+          <div class="cassette" data-cassette>
+            <span class="screw" style="top:10px;left:10px"></span><span class="screw" style="top:10px;right:10px"></span>
+            <span class="screw" style="bottom:10px;left:10px"></span><span class="screw" style="bottom:10px;right:10px"></span>
+            <div class="tape-label">
+              <div class="tape-head">
+                <div><small>Mira Kale</small><strong>Low Tide</strong></div>
+                <div class="tape-side"><span>Side A</span><small>spotify</small></div>
+              </div>
+              <div class="tape-window">
+                <span class="reel"></span><span class="tape-gap"></span><span class="reel"></span>
+              </div>
+              <div class="tape-seek"><span data-fill></span></div>
+              <div class="tape-times"><span data-elapsed>1:23</span><span>3:34</span></div>
+            </div>
+            <div class="tape-bay">
+              <button type="button" aria-label="Previous" data-prev><i class="ph-fill ph-skip-back"></i></button>
+              <button type="button" class="tape-play" aria-label="Pause" data-play><i class="ph-fill ph-pause"></i></button>
+              <button type="button" aria-label="Next" data-next><i class="ph-fill ph-skip-forward"></i></button>
+            </div>
+          </div>
           <figcaption><strong>Media</strong> Art, controls and seeking for any player, plus synced lyrics.</figcaption>
         </figure>
         <figure class="tile tile-pills">
