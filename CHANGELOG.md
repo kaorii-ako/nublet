@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Polyph tab: agents running, waiting for approval and blocked in your open Polyph room, read from Polyph's D-Bus status service. A waiting approval raises the pill; clicking it opens Polyph in the browser. Quiet while Polyph is not running.
+- Providers: a small contract in `providers.js` for apps that feed Nublet from outside. Polyph is the first.
+
 ## 1.1 — 2026-10-26
 
 - Gmail tab works: reads unread mail over IMAP with the GNOME Online Accounts token, since Google's REST API is not enabled for GNOME's OAuth client (#2).

@@ -11,6 +11,7 @@ Nublet runs entirely on your computer. It has no server, no analytics and no tel
 | Gmail | Subject and sender of up to 8 unread inbox messages | Fetched directly from Google over IMAP with the access token GNOME Online Accounts already holds. The token stays in memory for the request and is never stored or logged by Nublet. |
 | GitHub | Your notifications | Fetched by the `gh` command you already logged in with. Nublet never sees your token. |
 | Media | Title, artist, album art and position from your music player | Memory only. Album art from a web address is downloaded directly from that address. |
+| Polyph | Room name, agent names and states, and the one-line titles of pending approvals, from Polyph's status service on the session bus. Never code, chat or terminal content | Memory only. |
 | Weather, calendar | Read from GNOME's own weather and calendar services | Memory only. |
 | Stats | CPU, GPU, memory, disk temperature and network counters from `/proc` and `/sys` | Memory only, read once a second while the Stats tab is open. |
 | Mic and camera dots | Whether any app is recording or using a camera | Memory only. Nublet never accesses the microphone or camera itself. |
@@ -19,4 +20,5 @@ Nublet runs entirely on your computer. It has no server, no analytics and no tel
 
 - When you press **Install** under Claude Code in settings, Nublet adds its hook to `~/.claude/settings.json` after saving a backup next to it. **Remove** takes only Nublet's entries out again.
 - When a permission request is open and you press Allow, Always allow or Deny, Nublet writes your answer to the private runtime folder, where Claude Code's hook picks it up. Always allow adds the rule Claude Code itself suggested.
+- When you click a Polyph approval, Nublet runs `polyph web`, which opens Polyph in your browser. It never approves or denies anything in Polyph.
 - Nothing else outside GNOME's own settings for Nublet.
