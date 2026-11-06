@@ -4,6 +4,7 @@ import {ClipboardView} from './clipboard.js';
 import {GithubView} from './github.js';
 import {GmailView} from './gmail.js';
 import {MediaView} from './media.js';
+import {PROVIDER_VIEWS} from './providers.js';
 import {StatsView} from './stats.js';
 import {TimerView} from './timer.js';
 import {WeatherView} from './weather.js';
@@ -18,4 +19,5 @@ export const VIEWS = {
     calendar: AgendaView,
     gmail: GmailView,
     github: GithubView,
+    ...PROVIDER_VIEWS,
 };

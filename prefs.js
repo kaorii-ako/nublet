@@ -23,6 +23,7 @@ const WIDGETS = [
     ['calendar', 'Calendar', 'Today and tomorrow from your online accounts'],
     ['gmail', 'Gmail', 'Unread inbox mail through GNOME Online Accounts'],
     ['github', 'GitHub', 'Notifications through the gh command'],
+    ['polyph', 'Polyph', 'Agents running, waiting for approval or blocked in your Polyph room'],
 ];
 
 const PRESETS = [['dev', 'Dev'], ['life', 'Life']];

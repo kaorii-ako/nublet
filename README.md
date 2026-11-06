@@ -62,15 +62,18 @@ The GNOME top bar shows a clock and not much else. Things you care about happen 
 
 What the pill shows, highest priority first:
 
-- **Claude** permission → error
+- **Claude** permission
+- **Polyph** approval waiting
+- **Claude** error
 - **Timer** done
 - **Volume** change (replaces the stock OSD)
 - **Headphones** connected, with battery
+- **Polyph** agent blocked
 - **New** Gmail or GitHub items
 - **Claude** done → waiting in terminal
 - **Timer** running
 - **Now playing**, with art and audio bars
-- **Claude** working
+- **Claude** or **Polyph** agents working
 - otherwise the **clock**
 
 An orange dot shows while the mic is in use, a green one while the camera is.
@@ -89,6 +92,19 @@ The switch at the top left of the open island picks **Dev** or **Life**. Choose 
 | **Calendar** | An account with a calendar in Settings → Online Accounts |
 | **Gmail** | A Google account in Settings → Online Accounts with Mail on |
 | **GitHub** | The GitHub CLI, logged in with `gh auth login` |
+| **Polyph** | Polyph's daemon running in your desktop session. See [Polyph](#polyph) |
+
+## Polyph
+
+[Polyph](https://github.com/ProjectDEV-git/Polyph) runs coding agents in shared rooms. Turn on the Polyph tab in settings under Presets. It shows the room you opened last in Polyph: how many agents are running, waiting for approval or blocked, each pending approval, and each busy agent.
+
+- An approval waiting raises the pill with the room name and what is asked, like `polyph-beta · Run cargo test`. A blocked agent shows `polyph-beta · 1 blocked`. Running agents only add a dot next to the clock.
+- Click an approval to open Polyph in your browser (`polyph web`), where you approve or deny it. Nublet cannot approve Polyph work itself: Polyph's D-Bus service is read-only on purpose.
+- Nublet reads `org.polyph.Status1` on the session bus and never starts Polyph. While the daemon is not running the tab says so and the pill stays quiet. Start it with `polyph daemon start` from a terminal in your desktop session, so it can reach the session bus.
+
+### Providers
+
+Polyph is the first provider: an outside app that feeds Nublet through a small contract in `providers.js` (id, title, icon, a pure `parse`, `start(host)` and `stop()`). Add a class to `PROVIDERS` there and it becomes a tab like the built-in ones. Keep `parse` in a module without `gi://` imports so its tests run in `gjs` or `node`.
 
 ## Install
 
@@ -189,6 +205,7 @@ Real session logs: `journalctl -f -o cat /usr/bin/gnome-shell`
 ```bash
 gjs -m spring.test.js
 gjs -m parsers.test.js
+gjs -m polyph.test.js
 python3 -I dev/test_hook.py
 ./dev/pack.sh
 ```
@@ -211,6 +228,8 @@ python3 -I dev/test_hook.py
 | `stats.js`, `statsParse.js` | the Stats tab |
 | `timer.js`, `clipboard.js`, `agenda.js`, `weather.js` | the other tabs |
 | `feed.js`, `gmail.js`, `imapParse.js`, `github.js`, `links.js` | Gmail and GitHub |
+| `providers.js` | the provider contract, and the registry that turns providers into tabs |
+| `polyph.js`, `polyphParse.js` | the Polyph provider and its feed parser |
 | `prefs.js`, `schemas/` | settings |
 | `dev/` | nested shell, packer, hook test |
 | `docs/` | the website |

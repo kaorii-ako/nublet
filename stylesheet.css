@@ -121,6 +121,14 @@
   color: #ff5f57;
 }
 
+.nublet-state-running {
+  color: #6fd087;
+}
+
+.nublet-state-blocked {
+  color: #f49157;
+}
+
 .nublet-state-feed {
   color: #64a8ff;
 }

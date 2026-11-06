@@ -8,6 +8,7 @@ mkdir -p "$out"
 cd "$root"
 gjs -m spring.test.js
 gjs -m parsers.test.js
+gjs -m polyph.test.js
 python3 -I dev/test_hook.py
 
 sources=""
